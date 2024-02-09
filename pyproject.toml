@@ -1,0 +1,23 @@
+[tool.poetry]
+name = "cg4002-ai"
+version = "0.1.0"
+description = ""
+authors = ["nshian <ianng800@gmail.com>"]
+readme = "README.md"
+
+[tool.poetry.dependencies]
+python = "^3.11"
+scikit-learn = "^1.4.0"
+torch = "^2.1.2"
+torchvision = "^0.16.2"
+torchaudio = "^2.1.2"
+pandas = "^2.2.0"
+scipy = "^1.12.0"
+
+
+[tool.poetry.group.dev.dependencies]
+ipykernel = "^6.29.0"
+
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"
