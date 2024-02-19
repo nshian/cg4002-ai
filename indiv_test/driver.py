@@ -3,6 +3,7 @@ import numpy as np
 from numpy import median, var
 from scipy.stats import iqr, skew, kurtosis
 import json
+import time
 
 INPUT_SIZE = 36
 # NUM_CLASSES = 2
@@ -56,6 +57,7 @@ def run_model():
     x_test = [d['x'] for d in labelled_test_data]
     y_test = [d['y'] for d in labelled_test_data]
     wrong_preds = []
+    start_time = time.time()
     for idx, x in enumerate(x_test):
         print(f"Example {idx + 1}")
         # print("Start of iteration: dma send running?", dma_send.running)
@@ -71,6 +73,9 @@ def run_model():
             wrong_preds.append({'idx': idx, 'truth': y_test[idx], 'pred': pred})
         # print("End of iteration: dma send running?", dma_send.running)
         # print("End of iteration: dma rcv running?", dma_recv.running)
+    end_time = time.time()
+    execution_time = end_time - start_time
+    print("Execution time:", execution_time, "seconds")
     print(f"Accuracy: {100.0 * (len(x_test) - len(wrong_preds))/len(x_test)}%")
     print("Wrong predictions:", wrong_preds)
 
