@@ -15,8 +15,8 @@ nn = overlay.predict_0
 nn.write(0x00, 0x81)
 dma_send = dma.sendchannel
 dma_recv = dma.recvchannel
-input_stream = allocate(shape=(INPUT_SIZE, ), dtype='i4')
-output_stream = allocate(shape=(1, ), dtype='i4')
+input_stream = allocate(shape=(INPUT_SIZE, ), dtype='int32')
+output_stream = allocate(shape=(1, ), dtype='int32')
 
 # def prepare_features_xyz(x, y, z):
 #     def rms(x):
