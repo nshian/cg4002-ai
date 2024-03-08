@@ -1,0 +1,11 @@
+{
+    "captain": 0,
+    "grenade": 1,
+    "hulk": 2,
+    "ironman": 3,
+    "logout": 4,
+    "random": 5,
+    "reload": 6,
+    "shangchi": 7,
+    "shield": 8
+  }
