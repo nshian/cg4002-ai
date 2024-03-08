@@ -4,3 +4,5 @@
 indiv_test_hls/
 indiv_test_vivado/
 integration/data/raw/
+integration_hls/
+integration_vivado/
