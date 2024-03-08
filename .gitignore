@@ -1,3 +1,6 @@
 .venv
 .vscode
 *.log
+indiv_test_hls/
+indiv_test_vivado/
+integration/data/raw/
