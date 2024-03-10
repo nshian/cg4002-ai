@@ -91,19 +91,20 @@ def test_performance():
 def hacky_start_nn():
     with open('/home/xilinx/ai/first10toresetnn.json', ) as reset_json:
         data = json.load(reset_json)
-    x_test = [d['x'] for d in data]
-    y_test = [d['y'] for d in data]
-    wrong_preds = []
-    for idx, x in enumerate(x_test):
-        print(f"Example {idx + 1} from hacky start")
-        pred = predict(x)
-        print("Pred:", pred)
-        print("Ground truth:", y_test[idx])
-        if pred != y_test[idx]:
-            wrong_preds.append({'idx': idx, 'truth': y_test[idx], 'pred': pred})
-    print(f"Accuracy: {100.0 * (len(x_test) - len(wrong_preds))/len(x_test)}%")
-    print(f"No. of wrong predictions: {len(wrong_preds)} out of {len(x_test)}")
-    print("Wrong predictions:", wrong_preds)
+    dummy = [d['x'] for d in data]
+    # wrong_preds = []
+    # for idx, x in enumerate(x_test):
+    #     print(f"Example {idx + 1} from hacky start")
+    #     pred = predict(x)
+    #     print("Pred:", pred)
+    #     print("Ground truth:", y_test[idx])
+    #     if pred != y_test[idx]:
+    #         wrong_preds.append({'idx': idx, 'truth': y_test[idx], 'pred': pred})
+    # print(f"Accuracy: {100.0 * (len(x_test) - len(wrong_preds))/len(x_test)}%")
+    # print(f"No. of wrong predictions: {len(wrong_preds)} out of {len(x_test)}")
+    # print("Wrong predictions:", wrong_preds)
+    for x in dummy:
+        predict(x)
 
 
 if __name__ == "__main__":
