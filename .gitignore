@@ -6,3 +6,5 @@ indiv_test_vivado/
 integration/data/raw/
 integration_hls/
 integration_vivado/
+*.bit
+*.hwh
