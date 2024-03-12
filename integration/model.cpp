@@ -14,7 +14,7 @@ void predict(hls::stream<ap_axis<32,2,5,6>> &input_stream, hls::stream<ap_axis<3
 
     for (unsigned char i = 0; i < INPUT_SIZE; i++) {
         input_stream.read(in);
-        input_layer[i] = in.data;
+        input_layer[i] = in.data / 65536.0;
     }
 
     // Forward passes

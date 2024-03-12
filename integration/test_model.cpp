@@ -97,7 +97,7 @@ int main() {
 	ap_axis<32,2,5,6> in, out;
     for (int i = 0; i < NUM_SAMPLES; i++) {
         for (int j = 0; j < INPUT_SIZE; j++) {
-        	in.data = inputs[i][j];
+        	in.data = inputs[i][j] * 65536;
 			in.keep = 1;
 			in.strb = 1;
             in.last = (j == INPUT_SIZE - 1) ? 1 : 0;

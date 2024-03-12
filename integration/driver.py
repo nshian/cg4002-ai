@@ -9,7 +9,8 @@ import time
 
 INPUT_SIZE = 72
 
-overlay = Overlay('/home/xilinx/ai/design_1.bit')
+# overlay = Overlay('/home/xilinx/ai/design_1.bit') # does not divide by 65536.0
+overlay = Overlay('/home/xilinx/ai/integration.bit')
 dma = overlay.axi_dma_0
 nn = overlay.predict_0
 nn.write(0x00, 0x81) # start and auto restart
@@ -40,10 +41,13 @@ def process_data(raw_input):
         features.append(skew(column_values))
         features.append(kurtosis(column_values))
         features.append(sqrt(sum(x**2 for x in column_values) / len(column_values)))
+    features = np.array(features)
+    features = (features * (2 ** 16)).astype(np.int32)
     return features
 
 
 def predict(input_data):
+    # assumes already scaled by 65536
     for i in range(INPUT_SIZE):
         input_stream[i] = input_data[i]
     dma_send.transfer(input_stream)
@@ -61,15 +65,13 @@ def test_performance():
     # with open('/home/xilinx/ai/working.json', ) as test_data_json:
     # with open('/home/xilinx/ai/idx14to25.json', ) as test_data_json:
         labelled_test_data = json.load(test_data_json)
-    x_test = [d['x'] for d in labelled_test_data]
-    y_test = [d['y'] for d in labelled_test_data]
+    x_test = np.array([d['x'] for d in labelled_test_data])
+    x_test = (x_test * (2 ** 16)).astype(np.int32)
+    y_test = np.array([d['y'] for d in labelled_test_data])
     wrong_preds = []
     start_time = time.time()
     for idx, x in enumerate(x_test):
-        # print(f"Example {idx + 1}")
         pred = predict(x)
-        # print("Pred:", pred)
-        # print("Ground truth:", y_test[idx])
         if pred != y_test[idx]:
             wrong_preds.append({'idx': idx, 'truth': y_test[idx], 'pred': pred})
     end_time = time.time()
@@ -77,15 +79,15 @@ def test_performance():
     print("Execution time:", execution_time, "seconds")
     print(f"Accuracy: {100.0 * (len(x_test) - len(wrong_preds))/len(x_test)}%")
     print(f"No. of wrong predictions: {len(wrong_preds)} out of {len(x_test)}")
-    print("Wrong predictions:", wrong_preds)
-    random_to_valid = [d for d in wrong_preds if d['truth'] == 5]
-    random_to_shield = [d for d in wrong_preds if d['truth'] == 5 and d['pred'] == 8]
-    valid_to_random = [d for d in wrong_preds if d['pred'] == 5]
-    print("No. of random -> valid:", len(random_to_valid))
-    print("Random actions -> valid:", random_to_valid)
-    print("No. of random -> shield:", len(random_to_shield))
-    print("No. of valid -> random:", len(valid_to_random))
-    print("Valid actions -> random:", valid_to_random)
+    # print("Wrong predictions:", wrong_preds)
+    # random_to_valid = [d for d in wrong_preds if d['truth'] == 5]
+    # random_to_shield = [d for d in wrong_preds if d['truth'] == 5 and d['pred'] == 8]
+    # valid_to_random = [d for d in wrong_preds if d['pred'] == 5]
+    # print("No. of random -> valid:", len(random_to_valid))
+    # print("Random actions -> valid:", random_to_valid)
+    # print("No. of random -> shield:", len(random_to_shield))
+    # print("No. of valid -> random:", len(valid_to_random))
+    # print("Valid actions -> random:", valid_to_random)
 
 
 def hacky_start_nn():
