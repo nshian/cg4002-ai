@@ -23,7 +23,7 @@ NUM_COLS = 12
 
 class ActionClassifier():
     def __init__(self):
-        self.ol = Overlay('/home/xilinx/ai/newlogout.bit')
+        self.ol = Overlay('/home/xilinx/ai/swingarmlogout.bit')
         self.dma = self.ol.axi_dma_0
         self.nn = self.ol.predict_0
         self.nn.write(0x00, 0x81) # start and auto restart
