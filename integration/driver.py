@@ -10,20 +10,9 @@ import time
 INPUT_SIZE = 36
 NUM_COLS = 6
 
-# overlay = Overlay('/home/xilinx/ai/design_1.bit') # does not divide by 65536.0
-# overlay = Overlay('/home/xilinx/ai/integration.bit')
-# dma = overlay.axi_dma_0
-# nn = overlay.predict_0
-# nn.write(0x00, 0x81) # start and auto restart
-# dma_send = dma.sendchannel
-# dma_recv = dma.recvchannel
-# input_stream = allocate(shape=(INPUT_SIZE, ), dtype='int32')
-# output_stream = allocate(shape=(1, ), dtype='int32')
-
-
 class ActionClassifier():
     def __init__(self):
-        self.ol = Overlay('/home/xilinx/ai/handonly.bit')
+        self.ol = Overlay('/home/xilinx/ai/finalplease.bit')
         self.dma = self.ol.axi_dma_0
         self.nn = self.ol.predict_0
         self.nn.write(0x00, 0x81) # start and auto restart
@@ -50,14 +39,13 @@ class ActionClassifier():
         Returns a list of 36 floats for input to NN model.
         '''
         features = []
-        # SMALL_NON_ZERO_VALUE = 1e-2
+        SMALL_NON_ZERO_VALUE = 1e-2
         for col in range(NUM_COLS):
             column_values = [row[col] for row in raw_input]
-            # # some actions do not require leg movement, resulting in zero variance. replace zero variance with small value.
-            # if col >= 6: # leg columns
-            #     var = variance(column_values)
-            #     if var == 0:
-            #         column_values += np.random.normal(scale=SMALL_NON_ZERO_VALUE, size=len(column_values))
+            # replace zero variance with small value to prevent zero division error
+            var = variance(column_values)
+            if var == 0:
+                column_values += np.random.normal(scale=SMALL_NON_ZERO_VALUE, size=len(column_values))
             features.append(median(column_values))
             features.append(iqr(column_values))
             features.append(variance(column_values))
@@ -87,27 +75,6 @@ class ActionClassifier():
         return pred
 
 
-    # def test_performance_raw(self):
-    #     print("TESTING MODEL ON RAW DATA")
-    #     with open('/home/xilinx/ai/raw_test_data.json', ) as test_data_json:
-    #         labelled_test_data = json.load(test_data_json)
-    #     x_test = np.array([d['x'] for d in labelled_test_data])
-    #     y_test = np.array([d['y'] for d in labelled_test_data])
-    #     wrong_preds = []
-    #     start_time = time.time()
-    #     for idx, x in enumerate(x_test):
-    #         if idx % 100 == 0:
-    #             print(f"Example {idx} reached")
-    #         pred = self.get_prediction(x)
-    #         if pred != y_test[idx]:
-    #             wrong_preds.append({'idx': idx, 'truth': y_test[idx], 'pred': pred})
-    #     end_time = time.time()
-    #     execution_time = end_time - start_time
-    #     print("Execution time:", execution_time, "seconds")
-    #     print(f"Accuracy: {100.0 * (len(x_test) - len(wrong_preds))/len(x_test)}%")
-    #     print(f"No. of wrong predictions: {len(wrong_preds)} out of {len(x_test)}")
-
-
     def test_performance_augmented(self):
         print("TESTING MODEL ON AUGMENTED DATA")
         with open('/home/xilinx/ai/test_data.json', ) as test_data_json:
@@ -126,15 +93,6 @@ class ActionClassifier():
         print("Execution time:", execution_time, "seconds")
         print(f"Accuracy: {100.0 * (len(x_test) - len(wrong_preds))/len(x_test)}%")
         print(f"No. of wrong predictions: {len(wrong_preds)} out of {len(x_test)}")
-        # print("Wrong predictions:", wrong_preds)
-        # random_to_valid = [d for d in wrong_preds if d['truth'] == 5]
-        # random_to_shield = [d for d in wrong_preds if d['truth'] == 5 and d['pred'] == 8]
-        # valid_to_random = [d for d in wrong_preds if d['pred'] == 5]
-        # print("No. of random -> valid:", len(random_to_valid))
-        # print("Random actions -> valid:", random_to_valid)
-        # print("No. of random -> shield:", len(random_to_shield))
-        # print("No. of valid -> random:", len(valid_to_random))
-        # print("Valid actions -> random:", valid_to_random)
 
 
 if __name__ == "__main__":
